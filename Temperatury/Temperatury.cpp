@@ -5,6 +5,7 @@ using namespace std;
 int main()
 {
     int wybor;
+    int wybor2;
     float fahr, celsius, kelwin;
     while (true) {
         system("cls");
@@ -179,8 +180,56 @@ int main()
                 cout << "Brak zapisanych konwersji" << endl;
             }
             else {
-                for (int i = 0;i < dataCounter;i += 2) {
-                    cout << "<" << i / 2 + 1 << ">" << "  " << tab[i] << units[i] << " = " << tab[i + 1] << units[i + 1] << endl;
+                cout << "1. Tylko C -->\n";
+                cout << "2. Tylko K -->\n";
+                cout << "3. Tylko F -->\n";
+                cout << "4. Cala historia" << endl;
+                cout << "Wybierz operacje: " << endl;
+                cin >> wybor2;
+                switch (wybor2) {
+                case 1: {
+                    int sumaC = 0;
+                    for (int i = 0;i < dataCounter;i += 2) {
+                        if (units[i] == 'C') {
+                            cout << "<" << i / 2 + 1 << ">" << "  " << tab[i] << units[i] << " = " << tab[i + 1] << units[i + 1] << endl;
+                            sumaC += 1;
+                        }
+                    }
+                    if (sumaC == 0) {
+                        cout << "Brak danych" << endl;
+                    }
+                    break;}
+                case 2: {
+                    int sumaK = 0;
+                    for (int i = 0;i < dataCounter;i += 2) {
+                        if (units[i] == 'K') {
+                            cout << "<" << i / 2 + 1 << ">" << "  " << tab[i] << units[i] << " = " << tab[i + 1] << units[i + 1] << endl;
+                            sumaK += 1;
+                        }
+                    }
+                    if (sumaK == 0) {
+                        cout << "Brak danych" << endl;
+                    }
+                    break;}
+                case 3: {
+                    int sumaF = 0;
+                    for (int i = 0;i < dataCounter;i += 2) {
+                        if (units[i] == 'F') {
+                            cout << "<" << i / 2 + 1 << ">" << "  " << tab[i] << units[i] << " = " << tab[i + 1] << units[i + 1] << endl;
+                            sumaF += 1;
+                        }
+                    }
+                    if (sumaF == 0) {
+                        cout << "Brak danych" << endl;
+                    }
+                    break;}
+                case 4:
+                    for (int i = 0;i < dataCounter;i += 2) {
+                         cout << "<" << i / 2 + 1 << ">" << "  " << tab[i] << units[i] << " = " << tab[i + 1] << units[i + 1] << endl;
+                        }
+                    break;
+
+
                 }
             }
             cout << "Wcisnij enter aby kontynuować: ";
