@@ -11,7 +11,9 @@ float CtoK(float stopnie);
 float KtoF(float stopnie);
 float KtoC(float stopnie);
 int check(float temp, char stopnie);
-
+int dataCounter = 0;
+double tab[100];
+char units[100];
 int main()
 {
     int wybor;
@@ -25,7 +27,8 @@ int main()
             << "• 4 - przelicz Celsius->Kelwin\n"
             << "• 5 - przelicz Kelwin->Celsius\n"
             << "• 6 - przelicz Kelwin->Fahr\n"
-            << "• 7 - zakończ działanie programu" << endl;
+            << "• 7 - Pokaz historie\n"
+            << "• 8 - zakończ działanie programu" << endl;
         cout << "Wybierz operację: " << endl;
         cin >> wybor;
         switch (wybor) {
@@ -39,8 +42,19 @@ int main()
             }
             else {
                 celsius = FtoC(fahr);
+                if (dataCounter + 1 >= 100) {
+                    cout << "Pamięć pełna, nie można zapisać więcej danych." << endl;
+                }
+                else {
+                    tab[dataCounter] = fahr;
+                    units[dataCounter] = 'F';
+                    tab[dataCounter + 1] = celsius;
+                    units[dataCounter + 1] = 'C';
+                    dataCounter += 2;
+                }
                 cout << "Fahr : " << fahr << "  Celsius : " << celsius << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
+
                 cin.ignore(); cin.get();
             }
             break;
@@ -54,6 +68,16 @@ int main()
             }
             else {
                 kelwin = FtoK(fahr);
+                if (dataCounter + 1 >= 100) {
+                    cout << "Pamięć pełna, nie można zapisać więcej danych." << endl;
+                }
+                else {
+                    tab[dataCounter] = fahr;
+                    units[dataCounter] = 'F';
+                    tab[dataCounter + 1] = kelwin;
+                    units[dataCounter + 1] = 'K';
+                    dataCounter += 2;
+                }
                 cout << "Fahr : " << fahr << "  Kelwin : " << kelwin << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
                 cin.ignore(); cin.get();
@@ -69,6 +93,16 @@ int main()
             }
             else {
                 fahr = CtoF(celsius);
+                if (dataCounter + 1 >= 100) {
+                    cout << "Pamięć pełna, nie można zapisać więcej danych." << endl;
+                }
+                else {
+                    tab[dataCounter] = celsius;
+                    units[dataCounter] = 'C';
+                    tab[dataCounter + 1] = fahr;
+                    units[dataCounter + 1] = 'F';
+                    dataCounter += 2;
+                }
                 cout << "Celsius: " << celsius << "  Fahr: " << fahr << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
                 cin.ignore(); cin.get();
@@ -84,6 +118,16 @@ int main()
             }
             else {
                 kelwin = CtoK(celsius);
+                if (dataCounter + 1 >= 100) {
+                    cout << "Pamięć pełna, nie można zapisać więcej danych." << endl;
+                }
+                else {
+                    tab[dataCounter] = celsius;
+                    units[dataCounter] = 'C';
+                    tab[dataCounter + 1] = kelwin;
+                    units[dataCounter + 1] = 'K';
+                    dataCounter += 2;
+                }
                 cout << "Celsius: " << celsius << "  Kelwin: " << kelwin << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
                 cin.ignore(); cin.get();
@@ -99,6 +143,16 @@ int main()
             }
             else {
                 celsius = KtoC(kelwin);
+                if (dataCounter + 1 >= 100) {
+                    cout << "Pamięć pełna, nie można zapisać więcej danych." << endl;
+                }
+                else {
+                    tab[dataCounter] = kelwin;
+                    units[dataCounter] = 'K';
+                    tab[dataCounter + 1] = celsius;
+                    units[dataCounter + 1] = 'C';
+                    dataCounter += 2;
+                }
                 cout << "Kelwin : " << kelwin << "  Celsius : " << celsius << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
                 cin.ignore(); cin.get();
@@ -114,12 +168,35 @@ int main()
             }
             else {
                 fahr = KtoF(kelwin);
+                if (dataCounter + 1 >= 100) {
+                    cout << "Pamięć pełna, nie można zapisać więcej danych." << endl;
+                }
+                else {
+                    tab[dataCounter] = kelwin;
+                    units[dataCounter] = 'K';
+                    tab[dataCounter + 1] = fahr;
+                    units[dataCounter + 1] = 'F';
+                    dataCounter += 2;
+                }
                 cout << "Kelwin: " << kelwin << "  Fahr: " << fahr << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
                 cin.ignore(); cin.get();
             }
             break;
         case 7:
+            if (dataCounter == 0) {
+                cout << "Brak zapisanych konwersji" << endl;
+            }
+            else {
+                for (int i = 0;i < dataCounter;i+=2) {
+                    cout << "<" << i/2 + 1 << ">" << "  " << tab[i] << units[i] << " = " << tab[i + 1] << units[i + 1] << endl;
+                }
+            }
+            cout << "Wcisnij enter aby kontynuować: ";
+            cin.ignore();
+            cin.get();
+            break;
+        case 8:
             cout << "Wybrano zakończenie działania programu" << endl;
             return 0;
         default:
@@ -139,7 +216,7 @@ float FtoK(float stopnie) {
     return wynik;
 }
 float CtoF(float stopnie) {
-    float wynik = (stopnie * 9.0) / (5.0 + 32.0);
+    float wynik = (stopnie * 9.0/5.0) + 32.0;
     return wynik;
 }
 float CtoK(float stopnie) {
@@ -147,7 +224,7 @@ float CtoK(float stopnie) {
     return wynik;
 }
 float KtoF(float stopnie) {
-    float wynik = (stopnie * 9.0) / (5.0 - 459.67);
+    float wynik = (stopnie - 273.15) * 9.0 / 5.0 + 32.0;
     return wynik;
 }
 float KtoC(float stopnie) {
