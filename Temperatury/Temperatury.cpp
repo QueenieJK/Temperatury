@@ -1,15 +1,61 @@
-﻿#include <iostream>
+#include <iostream>
 #include <stdlib.h>
 #include <cstdlib> 
-#include <ctime> 
+#include <ctime>
+#include <cctype>
 #include "headerFile.h"
 using namespace std;
+bool conversionFailed = false;
+double convertToDouble(const char vector[], int size) {
+    conversionFailed = false;
+    if (vector[0] == '\0') {
+        conversionFailed = true;
+        return 0.0;
+    }
+    double result = 0.0;
+    double fraction = 0.1;
+    bool isNegative = false;
+    bool afterDot = false;
+
+    for (int i = 0; i < size; ++i) {
+        char c = vector[i];
+
+        if (c == '\0')
+            break;
+
+        if (isdigit(c)) {
+            if (!afterDot) {
+                result = result * 10 + (c - '0');
+            }
+            else {
+                result += (c - '0') * fraction;
+                fraction *= 0.1;
+            }
+        }
+        else if (c == '-' && i == 0) {
+            isNegative = true;
+        }
+        else if (c == '+' && i == 0) {
+            continue;
+        }
+        else if (c == '.' && !afterDot) {
+            afterDot = true;
+        }
+        else {
+            conversionFailed = true;
+            return 0.0;
+        }
+    }
+
+    return isNegative ? -result : result;
+}
 int main()
-{   
+{
     srand(time(NULL));
     int wybor;
     int wybor2;
     float fahr, celsius, kelwin;
+    char buffer[280];
     while (true) {
         system("cls");
 
@@ -25,18 +71,23 @@ int main()
             << "• 10 - Losowe wypelnienie historii\n"
             << "• -1 - zakończ działanie programu" << endl;
         cout << "Wybierz operację: " << endl;
-        cin >> wybor;
+        cin.getline(buffer, 280);
+        wybor = (int)convertToDouble(buffer, 280);
+        if (conversionFailed) {
+            cout << "Niepoprawny wybor!\n";
+            cin.get();
+            continue;
+        }
         switch (wybor) {
         case -1:
             cout << "Wybrano zakończenie działania programu" << endl;
             return 0;
         case 1:
             cout << "Podaj wartośc F: " << endl;
-            cin >> fahr;
-            if (check(fahr, 'F') == -999.0) {
-                cout << "Nie ma takiej temperatury" << endl;
-                cout << "Wcisnij enter aby kontynuować: " << endl;
-                cin.ignore(); cin.get();
+            cin.getline(buffer, 280);
+            fahr = (float)convertToDouble(buffer, 280);
+            if (conversionFailed || check(fahr, 'F') == -999.0) {
+                cout << "Niepoprawna temperatura!\n"; cin.get(); break;
             }
             else {
                 celsius = FtoC(fahr);
@@ -53,16 +104,18 @@ int main()
                 cout << "Fahr : " << fahr << "  Celsius : " << celsius << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
 
-                cin.ignore(); cin.get();
+                cin.get();
             }
             break;
         case 2:
             cout << "Podaj wartośc F: " << endl;
-            cin >> fahr;
-            if (check(fahr, 'F') == -999.0) {
+            cin.ignore();
+            cin.getline(buffer, 280);
+            fahr = convertToDouble(buffer, 280);
+            if (conversionFailed || check(fahr, 'F') == -999.0) {
                 cout << "Nie ma takiej temperatury" << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
-                cin.ignore(); cin.get();
+                cin.get();
             }
             else {
                 kelwin = FtoK(fahr);
@@ -78,16 +131,17 @@ int main()
                 }
                 cout << "Fahr : " << fahr << "  Kelwin : " << kelwin << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
-                cin.ignore(); cin.get();
+                cin.get();
             }
             break;
         case 3:
             cout << "Podaj wartośc C: " << endl;
-            cin >> celsius;
-            if (check(celsius, 'C') == -999.0) {
+            cin.getline(buffer, 280);
+            celsius = convertToDouble(buffer, 280);
+            if (conversionFailed || check(celsius, 'C') == -999.0) {
                 cout << "Nie ma takiej temperatury" << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
-                cin.ignore(); cin.get();
+                cin.get();
             }
             else {
                 fahr = CtoF(celsius);
@@ -103,16 +157,17 @@ int main()
                 }
                 cout << "Celsius: " << celsius << "  Fahr: " << fahr << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
-                cin.ignore(); cin.get();
+                cin.get();
             }
             break;
         case 4:
             cout << "Podaj wartośc C: " << endl;
-            cin >> celsius;
-            if (check(celsius, 'C') == -999.0) {
+            cin.getline(buffer, 280);
+            celsius = convertToDouble(buffer, 280);
+            if (conversionFailed || check(celsius, 'C') == -999.0) {
                 cout << "Nie ma takiej temperatury" << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
-                cin.ignore(); cin.get();
+                cin.get();
             }
             else {
                 kelwin = CtoK(celsius);
@@ -128,13 +183,14 @@ int main()
                 }
                 cout << "Celsius: " << celsius << "  Kelwin: " << kelwin << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
-                cin.ignore(); cin.get();
+                cin.get();
             }
             break;
         case 5:
             cout << "Podaj wartośc K: " << endl;
-            cin >> kelwin;
-            if (check(kelwin, 'K') == -999.0) {
+            cin.getline(buffer, 280);
+            kelwin = convertToDouble(buffer, 280);
+            if (conversionFailed || check(kelwin, 'K') == -999.0) {
                 cout << "Nie ma takiej temperatury" << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
                 cin.ignore(); cin.get();
@@ -153,16 +209,17 @@ int main()
                 }
                 cout << "Kelwin : " << kelwin << "  Celsius : " << celsius << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
-                cin.ignore(); cin.get();
+                cin.get();
             }
             break;
         case 6:
             cout << "Podaj wartośc K: " << endl;
-            cin >> kelwin;
-            if (check(kelwin, 'K') == -999.0) {
+            cin.getline(buffer, 280);
+            kelwin = convertToDouble(buffer, 280);
+            if (conversionFailed || check(kelwin, 'K') == -999.0) {
                 cout << "Nie ma takiej temperatury" << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
-                cin.ignore(); cin.get();
+                cin.get();
             }
             else {
                 fahr = KtoF(kelwin);
@@ -178,7 +235,7 @@ int main()
                 }
                 cout << "Kelwin: " << kelwin << "  Fahr: " << fahr << endl;
                 cout << "Wcisnij enter aby kontynuować: " << endl;
-                cin.ignore(); cin.get();
+                cin.get();
             }
             break;
         case 7:
@@ -191,7 +248,14 @@ int main()
                 cout << "3. Tylko F -->\n";
                 cout << "4. Cala historia" << endl;
                 cout << "Wybierz operacje: " << endl;
-                cin >> wybor2;
+                cin.getline(buffer, 280);
+                wybor2 = (int)convertToDouble(buffer, 280);
+                if (conversionFailed) {
+                    cout << "Niepoprawny wybor!" << endl;
+                    cout << "Wcisnij enter aby kontynuowac: ";
+                    cin.get();
+                    break;
+                }
                 switch (wybor2) {
                 case 1: {
                     int licznik = 1;
@@ -247,8 +311,6 @@ int main()
 
                 }
             }
-            cout << "Wcisnij enter aby kontynuować: ";
-            cin.ignore();
             cin.get();
             break;
         case 8: {
@@ -264,7 +326,8 @@ int main()
                     licznik++;
                 }
                 cout << "Ktora linie chcesz usunac?" << endl;
-                cin >> linijka;
+                cin.getline(buffer, 280);
+                linijka = convertToDouble(buffer, 280);
                 if (cin.fail()) {
                     cin.clear();
                     cin.ignore(1000, '\n');
@@ -291,8 +354,8 @@ int main()
             }
 
             cout << "Wcisnij enter aby kontynuować: ";
-            cin.ignore();
             cin.get();
+
             break;
         }
         case 9: {
@@ -308,34 +371,37 @@ int main()
                     licznik++;
                 }
                 cout << "Ktora linie chcesz zmodyfikowac?" << endl;
-                cin >> linijka;
-                if (cin.fail()) {
-                    cin.clear();
-                    cin.ignore(1000, '\n');
+                cin.getline(buffer, 280);
+                conversionFailed = false;
+                linijka = (int)convertToDouble(buffer, 280);
+                if (conversionFailed) {
                     cout << "Zly wybor! Wprowadz liczbe." << endl;
                     cout << "Wcisnij enter aby kontynuowac: ";
                     cin.get();
                     break;
                 }
-                if (linijka > licznik || linijka < 1) {
+                if (linijka < 1 || linijka >= licznik) {
                     cout << "Nie ma takiej linii" << endl;
                 }
-                else if (linijka >= 1 && linijka < licznik) {
+                else {
                     int index1 = linijka * 2 - 2;
                     int index2 = linijka * 2 - 1;
                     float nowatemperatura;
                     char nowyrodzaj;
                     char nowyrodzaj2;
                     cout << "Wpisz nowa temperature" << endl;
-                    cin >> nowatemperatura;
+                    cin.getline(buffer, 280);
+                    nowatemperatura = convertToDouble(buffer, 280);
                     cout << "Podaj rodzaj temperatury : C,K lub F" << endl;
-                    cin >> nowyrodzaj;
+                    cin.getline(buffer, 280);
+                    nowyrodzaj = toupper(buffer[0]);
                     if (nowyrodzaj != 'C' && nowyrodzaj != 'K' && nowyrodzaj != 'F') {
                         cout << "Podano zly rodzaj" << endl;
                         break;
                     }
                     cout << "Na co?" << endl;
-                    cin >> nowyrodzaj2;
+                    cin.getline(buffer, 280);
+                    nowyrodzaj2 = toupper(buffer[0]);
                     if (nowyrodzaj2 != 'C' && nowyrodzaj2 != 'K' && nowyrodzaj2 != 'F') {
                         cout << "Podano zly rodzaj" << endl;
                         break;
@@ -388,20 +454,17 @@ int main()
                         }
                     }
                 }
-                else {
-                    cout << "Nie ma takiej linii" << endl;
-                }
             }
 
             cout << "Wcisnij enter aby kontynuować: ";
-            cin.ignore();
             cin.get();
             break;
         }
         case 10: {
             int ile;
             cout << "Ile losowych wartosci przeliczyc?" << endl;
-            cin >> ile;
+            cin.getline(buffer, 280);
+            ile = convertToDouble(buffer, 280);
             if (cin.fail()) {
                 cin.clear();
                 cin.ignore(1000, '\n');
@@ -409,40 +472,41 @@ int main()
                 cout << "Wcisnij enter aby kontynuowac: ";
                 cin.get();
                 break;
-            }  
+            }
             if (ile < 1) {
                 cout << "Liczba jest za mala" << endl;
                 break;
             }
             if (dataCounter + ile * 2 > 100) {
-                 char taknie;
-                 cout << "Nie ma tyle miejsca" << endl;
-                 cout << "Czy wygenerować tylko tyle losówek ile zostało miejsca?(y/n)" << endl;
-                 cin >> taknie;
-                 if (cin.fail()) {
-                     cin.clear();
-                     cin.ignore(1000, '\n');
-                     cout << "Zly wybor!" << endl;
-                     cout << "Wcisnij enter aby kontynuowac: ";
-                     cin.get();
-                     break;
-                 }
-                 if (taknie == 'n') {
-                     cout << "Powrot do glownego menu" << endl;
-                     break;
-                 }
-                 else if (taknie == 'y') {
-                     ile = (100 - dataCounter) / 2;
-                     if (ile <= 0) {
-                         cout << "Brak miejsca na chociaz jeden wpis!" << endl;
-                         break;
-                     }
-                     cout << "Wygeneruje " << ile << " wpisow" << endl;
-                 }
-                 else {
-                     cout << "Zla odpowiedz" << endl;
-                     break;
-                 }
+                char taknie;
+                cout << "Nie ma tyle miejsca" << endl;
+                cout << "Czy wygenerować tylko tyle losówek ile zostało miejsca?(y/n)" << endl;
+                cin.getline(buffer, 280);
+                taknie = toupper(buffer[0]);
+                if (cin.fail()) {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    cout << "Zly wybor!" << endl;
+                    cout << "Wcisnij enter aby kontynuowac: ";
+                    cin.get();
+                    break;
+                }
+                if (taknie == 'n') {
+                    cout << "Powrot do glownego menu" << endl;
+                    break;
+                }
+                else if (taknie == 'y') {
+                    ile = (100 - dataCounter) / 2;
+                    if (ile <= 0) {
+                        cout << "Brak miejsca na chociaz jeden wpis!" << endl;
+                        break;
+                    }
+                    cout << "Wygeneruje " << ile << " wpisow" << endl;
+                }
+                else {
+                    cout << "Zla odpowiedz" << endl;
+                    break;
+                }
             }
             for (int i = 0; i < ile; i++) {
                 char startUnits[3] = { 'C', 'F', 'K' };
@@ -490,10 +554,10 @@ int main()
                 dataCounter += 2;
             }
             cout << ile << " losowych wpisow dodano.\n";
-        cout << "Wcisnij enter aby kontynuować: ";
-        cin.ignore();
-        cin.get();
-        break;
+        }
+               cout << "Wcisnij enter aby kontynuować: ";
+               cin.get();
+               break;
         default:
             if (cin.fail()) {
                 cin.clear();
@@ -503,7 +567,9 @@ int main()
                 cin.get();
                 break;
             }
-        }
 
+        }
     }
 }
+
+
